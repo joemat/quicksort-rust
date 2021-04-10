@@ -34,3 +34,30 @@ fn main() {
         println!("Nothing to sort");
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::q_sort;
+
+    #[test]
+    fn empty_vector() {
+        let empty_vector: Vec<i32> = Vec::new();
+        assert_eq!(empty_vector.clone(), q_sort(empty_vector.clone()));
+    }
+
+    #[test]
+    fn single_value() {
+        assert_eq!(vec![1], q_sort(vec![1]));
+    }
+
+    #[test]
+    fn simple_sort() {
+        assert_eq!(vec![1, 2, 3], q_sort(vec![3,2,1]));
+    }
+
+    #[test]
+    fn duplicate_values() {
+        assert_eq!(vec![1,1,1,3], q_sort(vec![1,1,3,1]));
+    }
+}
