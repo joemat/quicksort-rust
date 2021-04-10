@@ -1,9 +1,25 @@
 use std::env;
 
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    if let Some((_argv0, unsorted)) = args.split_first() {
+        run_q_sort(as_ints(unsorted.to_vec()));
+    } else {
+        // no arguments passed
+        println!("Nothing to sort");
+    }
+}
+
 fn as_ints(strings: Vec<String>) -> Vec<i32> {
     strings.into_iter().map(|string_val| {
         string_val.parse::<i32>().expect("Numbers expected")
     }).collect()
+}
+
+fn run_q_sort(unsorted: Vec<i32>) {
+    println!("Sorting: {:?}", unsorted);
+    let sorted = q_sort(unsorted.clone());
+    println!("Sorted:  {:?}", sorted);
 }
 
 fn q_sort(unsorted: Vec<i32>) -> Vec<i32> {
@@ -18,19 +34,14 @@ fn q_sort(unsorted: Vec<i32>) -> Vec<i32> {
 fn sort_with_pivot(pivot: i32, numbers: Vec<i32>) -> Vec<i32> {
     let less = numbers.clone().into_iter().filter(|&num| num < pivot).collect();
     let greater_eq = numbers.clone().into_iter().filter(|&num| num >= pivot).collect();
-    // join lists: lower + pivot + greater_eq
-    vec![q_sort(less), q_sort(greater_eq)].join(&pivot)
+
+    concatenate(q_sort(less),
+                &pivot,
+                q_sort(greater_eq))
 }
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    if let Some((_argv0, args_)) = args.split_first() {
-        let numbers = as_ints(args_.to_vec());
-        println!("Sorting: {:?}", numbers);
-        println!("Sorted:  {:?}", q_sort(numbers));
-    } else {
-        println!("Nothing to sort");
-    }
+fn concatenate(less: Vec<i32>, pivot: &i32, greater_eq: Vec<i32>) -> Vec<i32> {
+    vec![less, greater_eq].join(pivot)
 }
 
 
