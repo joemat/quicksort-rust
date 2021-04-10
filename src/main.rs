@@ -27,7 +27,7 @@ fn main() {
     if let Some((_argv0, args_)) = args.split_first() {
         let numbers = as_ints(args_.to_vec());
         println!("Sorting: {:?}", numbers);
-        println!("Sorting: {:?}", q_sort(numbers));
+        println!("Sorted:  {:?}", q_sort(numbers));
     } else {
         println!("Nothing to sort");
     }
