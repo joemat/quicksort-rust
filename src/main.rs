@@ -37,7 +37,7 @@ fn main() {
 
 
 #[cfg(test)]
-mod tests {
+mod qsort {
     use crate::q_sort;
 
     #[test]
@@ -59,5 +59,21 @@ mod tests {
     #[test]
     fn duplicate_values() {
         assert_eq!(vec![1,1,1,3], q_sort(vec![1,1,3,1]));
+    }
+}
+
+
+mod args {
+    use crate::as_ints;
+
+    #[test]
+    fn all_args_are_numbers() {
+        assert_eq!(vec![1, 2, 4, 3], as_ints(vec!["1".to_string(), "2".to_string(), "4".to_string(), "3".to_string()]));
+    }
+
+    #[test]
+    #[should_panic]
+    fn panic_when_non_number_is_passed() {
+        as_ints(vec!["non-number".to_string()]);
     }
 }
