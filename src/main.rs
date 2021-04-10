@@ -18,7 +18,7 @@ fn as_ints(strings: Vec<String>) -> Vec<i32> {
 
 fn run_q_sort(unsorted: Vec<i32>) {
     println!("Sorting: {:?}", unsorted);
-    let sorted = q_sort(unsorted.clone());
+    let sorted = q_sort(unsorted);
     println!("Sorted:  {:?}", sorted);
 }
 
