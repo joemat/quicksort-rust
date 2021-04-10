@@ -6,22 +6,20 @@ fn as_ints(strings: Vec<String>) -> Vec<i32> {
     }).collect()
 }
 
-fn split_by_value(numbers: Vec<i32>, pivot: i32) -> (Vec<i32>, Vec<i32>) {
-    let less = numbers.clone().into_iter().filter(|&num| num < pivot).collect();
-    let greater_eq = numbers.clone().into_iter().filter(|&num| num >= pivot).collect();
-    return (less, greater_eq)
+fn q_sort(unsorted: Vec<i32>) -> Vec<i32> {
+    return if let Some((&pivot, remaining)) = unsorted.split_first() {
+        sort_with_pivot(pivot, remaining.to_vec())
+    } else {
+        // unsorted contains only one element => this is already sorted
+        unsorted
+    };
 }
 
-fn q_sort(unsorted: Vec<i32>) -> Vec<i32> {
-
-    if let Some((pivot, remaining)) = unsorted.split_first() {
-        let (lower, greater_eq) =  split_by_value(remaining.to_vec(), *pivot);
-
-        // join lists: lower + pivot + greater_eq
-        return vec![q_sort(lower), q_sort(greater_eq)].join(pivot);
-    }
-    // unsorted contains only one element => this is already sorted
-    return unsorted;
+fn sort_with_pivot(pivot: i32, numbers: Vec<i32>) -> Vec<i32> {
+    let less = numbers.clone().into_iter().filter(|&num| num < pivot).collect();
+    let greater_eq = numbers.clone().into_iter().filter(|&num| num >= pivot).collect();
+    // join lists: lower + pivot + greater_eq
+    vec![q_sort(less), q_sort(greater_eq)].join(&pivot)
 }
 
 fn main() {
@@ -43,32 +41,53 @@ mod qsort {
     #[test]
     fn empty_vector() {
         let empty_vector: Vec<i32> = Vec::new();
-        assert_eq!(empty_vector.clone(), q_sort(empty_vector.clone()));
+        assert_eq!(empty_vector.clone(),
+                   q_sort(empty_vector.clone()));
     }
 
     #[test]
     fn single_value() {
-        assert_eq!(vec![1], q_sort(vec![1]));
+        assert_eq!(vec![1],
+                   q_sort(vec![1]));
     }
 
     #[test]
+    fn two_values() {
+        assert_eq!(vec![1, 2],
+                   q_sort(vec![2, 1]));
+    }
+
+
+    #[test]
     fn simple_sort() {
-        assert_eq!(vec![1, 2, 3], q_sort(vec![3,2,1]));
+        assert_eq!(vec![1, 2, 3],
+                   q_sort(vec![3, 2, 1]));
+    }
+
+    #[test]
+    fn simple_sort_more_values() {
+        assert_eq!(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                   q_sort(vec![3, 2, 1, 14, 13, 12, 11, 10, 4, 5, 6, 9, 8, 7]));
     }
 
     #[test]
     fn duplicate_values() {
-        assert_eq!(vec![1,1,1,3], q_sort(vec![1,1,3,1]));
+        assert_eq!(vec![1, 1, 1, 2, 2, 3, 3],
+                   q_sort(vec![1, 3, 1, 3, 1, 2, 2]));
     }
 }
 
-
+#[cfg(test)]
 mod args {
     use crate::as_ints;
 
     #[test]
     fn all_args_are_numbers() {
-        assert_eq!(vec![1, 2, 4, 3], as_ints(vec!["1".to_string(), "2".to_string(), "4".to_string(), "3".to_string()]));
+        assert_eq!(vec![1, 2, 4, 3],
+                   as_ints(vec!["1".to_string(),
+                                "2".to_string(),
+                                "4".to_string(),
+                                "3".to_string()]));
     }
 
     #[test]
